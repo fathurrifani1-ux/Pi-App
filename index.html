@@ -4,17 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taskora</title>
+
+    <!-- Pi SDK -->
+    <script src="https://browser.pinet.org/pi-sdk.js"></script>
 </head>
 <body>
     <h1>Taskora</h1>
     <p>Global marketplace for micro-services.</p>
     <p>Under development</p>
 
-    <!-- Tombol test payment -->
     <button id="payButton" style="padding:10px 20px; font-size:16px;">Test Payment</button>
 
     <script>
-        // Fungsi dummy payment untuk Pi Browser
         document.getElementById("payButton").onclick = function() {
             if (window.Pi) {
                 Pi.request({amount: "0.1", note: "Test Payment"})

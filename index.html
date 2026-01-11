@@ -1,30 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taskora</title>
+  <meta charset="UTF-8" />
+  <title>Taskora – Pi Test Payment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Pi SDK -->
-    <script src="https://browser.pinet.org/pi-sdk.js"></script>
+  <!-- WAJIB: Pi SDK -->
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #020617;
+      padding: 24px;
+      border-radius: 12px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(0,0,0,0.4);
+    }
+    button {
+      margin-top: 16px;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #7c3aed;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: #475569;
+      cursor: not-allowed;
+    }
+    small {
+      display: block;
+      margin-top: 10px;
+      opacity: 0.7;
+    }
+  </style>
 </head>
+
 <body>
-    <h1>Taskora</h1>
-    <p>Global marketplace for micro-services.</p>
-    <p>Under development</p>
+  <div class="card">
+    <h2>Taskora</h2>
+    <p>Global marketplace for micro-services</p>
 
-    <button id="payButton" style="padding:10px 20px; font-size:16px;">Test Payment</button>
+    <button id="payBtn" disabled>Test Payment (1 Pi)</button>
+    <small id="status">Loading Pi SDK...</small>
+  </div>
 
-    <script>
-        document.getElementById("payButton").onclick = function() {
-            if (window.Pi) {
-                Pi.request({amount: "0.1", note: "Test Payment"})
-                  .then(response => alert("Payment Success: " + JSON.stringify(response)))
-                  .catch(err => alert("Payment Failed: " + err));
-            } else {
-                alert("Pi SDK not detected. Open in Pi Browser for test payment.");
-            }
+  <script>
+    window.addEventListener("load", () => {
+
+      // Cek Pi Browser
+      if (!window.Pi) {
+        alert("Pi SDK not detected.\nPlease open this app in Pi Browser.");
+        return;
+      }
+
+      // Init SDK
+      Pi.init({ version: "2.0" });
+
+      document.getElementById("status").innerText = "Pi SDK detected ✅";
+      const btn = document.getElementById("payBtn");
+      btn.disabled = false;
+
+      btn.onclick = async () => {
+        try {
+          const payment = await Pi.createPayment({
+            amount: 1,
+            memo: "Taskora test payment",
+            metadata: { app: "taskora", type: "test" }
+          });
+
+          alert("Payment created!\nID: " + payment.identifier);
+        } catch (err) {
+          console.error(err);
+          alert("Payment cancelled or failed");
         }
-    </script>
+      };
+    });
+  </script>
 </body>
 </html>
